@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from function import Variable, square
+from utils import Variable, square, numerical_diff
 
 class SquareTest(unittest.TestCase):
     """
@@ -22,8 +22,17 @@ class SquareTest(unittest.TestCase):
         x = Variable(np.array(3.0))
         y = square(x)
         y.backward()
-        expected = np.array(6.0)
+        expected = np.array(1)
         self.assertEqual(x.grad,expected)
+        
+    def test_gradient_check(self):
+        x = Variable(np.random.rand(1))
+        y = square(x)
+        y.backward()
+        
+        num_grad = numerical_diff(square, x)
+        flg = np.allclose(x.grad, num_grad)
+        self.assertTrue(flg)
         
         
 unittest.main() #를 입력하면 'step10.py'만 입력해도 test할 수 있음
